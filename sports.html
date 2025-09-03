@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sports | APPLE TV</title>
+    <link href="https://appeltv.netlify.app/AppleTV-Logo.png" rel="icon" />
+    <link
+      href="https://appeltv.netlify.app/AppleTV-Logo.png"
+      rel="apple-touch-icon"
+    />
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://appeltv.netlify.app/assets/style.css"
+    />
+    <!-- HLS.js library untuk memutar m3u8 -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.10/dist/hls.min.js"></script>
+  </head>
+  <body>
+    <!-- Navbar Bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <img src="https://appeltv.netlify.app/AppleTV-Logo.png" alt="Logo" />
+          TV Streaming
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="https://appeltv.netlify.app/tv"
+                ><i class="bi bi-house-door"></i> NASIONAL</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="#"
+                ><i class="bi bi-collection-play"></i> SPORTS</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://appeltv.netlify.app/film"
+                ><i class="bi bi-info-circle"></i> FILM</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-4">
+      <div class="row g-4">
+        <!-- Player Section -->
+        <div class="col-lg-8">
+          <div class="player-container">
+            <div class="ratio ratio-16x9">
+              <!-- Player utama untuk konten iframe -->
+              <iframe
+                id="tv-frame"
+                src="https://live.samuraitv.biz.id/p/tnts1-ios.html"
+                allowfullscreen
+              ></iframe>
+
+              <!-- Player HLS untuk konten m3u8 (tersembunyi secara default) -->
+              <div id="hls-container" style="display: none">
+                <video id="hls-player" controls></video>
+              </div>
+
+              <!-- Placeholder ketika switching player -->
+              <div
+                id="player-placeholder"
+                class="player-placeholder"
+                style="display: none"
+              >
+                <div class="text-center">
+                  <div class="spinner-border text-primary mb-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <p>Memuat stream...</p>
+                </div>
+              </div>
+            </div>
+            <div class="channel-info">
+              <h3 id="current-channel">TNT SPORTS 1</h3>
+              <div class="d-flex gap-2 text-muted">
+                <span id="current-group">Take them all on.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Channel List -->
+        <div class="col-lg-4">
+          <div class="channel-list">
+            <!-- NASIONAL Group -->
+            <div class="group-header">STREAM TV</div>
+            <div class="p-3">
+              <div class="row g-3 row-cols-3 row-cols-md-4 row-cols-lg-3">
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn active"
+                    data-src="https://live.samuraitv.biz.id/p/tnts1-ios.html"
+                    data-name="TNT SPORTS 1"
+                    data-group="Take them all on."
+                  >
+                    <img
+                      src="https://cdn.comedy.co.uk/images/channels/tnt_sports_1.jpg"
+                      alt="TNT SPORTS 1"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://live.samuraitv.biz.id/p/samuraitv-body-margin-0px_5.html"
+                    data-name="TNT SPORTS 2"
+                    data-group="Take them all on."
+                  >
+                    <img
+                      src="https://cdn.comedy.co.uk/images/channels/tnt_sports_2.jpg"
+                      alt="TNT SPORTS 2"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://live.samuraitv.biz.id/p/tnts3-ios.html"
+                    data-name="TNT SPORTS 3"
+                    data-group="Take them all on."
+                  >
+                    <img
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkBxxLBfEZMcHQkfOUz3a6WuelzuGJvP3LReoDMIq4L5BjdiinPU_5JVAeXGlIn1zHGtY&usqp=CAU"
+                      alt="TNT SPORTS 3"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://live.samuraitv.biz.id/p/tnts4-ios.html"
+                    data-name="TNT SPORTS 4"
+                    data-group="Take them all on."
+                  >
+                    <img
+                      src="https://stmify.com/wp-content/uploads/2024/10/246-s.webp"
+                      alt="TNT SPORTS 4"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://live.samuraitv.biz.id/p/tsn2ca.html"
+                    data-name="TSN 2"
+                    data-group="Where sports come to life"
+                  >
+                    <img
+                      src="https://r2.thesportsdb.com/images/media/channel/logo/sutruq1433379787.png"
+                      alt="TSN 2"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://live.samuraitv.biz.id/p/tsn3ca.html"
+                    data-name="TSN 3"
+                    data-group="Where sports come to life"
+                  >
+                    <img
+                      src="https://r2.thesportsdb.com/images/media/channel/logo/ssxtux1433380256.png"
+                      alt="TSN 3"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://live.samuraitv.biz.id/p/tsn5ca.html"
+                    data-name="TSN 3"
+                    data-group="Where sports come to life"
+                  >
+                    <img
+                      src="https://r2.thesportsdb.com/images/media/channel/logo/ssxtux1433380256.png"
+                      alt="TSN 3"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://live.samuraitv.biz.id/p/tvrisport.html"
+                    data-name="TVRI SPORTS"
+                    data-group="Media Pemersatu Bangsa"
+                  >
+                    <img
+                      src="https://football-tribe.com/indonesia/wp-content/uploads/sites/10/2019/01/TVRI-Sport-HD.png"
+                      alt="TVRI SPORTS"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <!-- Tambahkan channel M3U8-->
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://dmidspta.cdn.mgmlcdn.com/dubaisports/smil:dubaisports.stream.smil/master.m3u8"
+                    data-name="DUBAI SPORTS 1"
+                    data-group="DUBAI SPORTS 1"
+                    data-type="hls"
+                  >
+                    <img
+                      src="https://cdn.taaqup.com//2024/10/%D8%AA%D8%B1%D8%AF%D8%AF-%D9%82%D9%86%D9%88%D8%A7%D8%AA-%D8%AF%D8%A8%D9%8A-%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A9-%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF.webp"
+                      alt="DUBAI SPORTS 1"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://dmitwlvvll.cdn.mgmlcdn.com/dubaisportshd/smil:dubaisportshd.smil/master.m3u8 "
+                    data-name="DUBAI SPORTS 2"
+                    data-group="SPORTS"
+                    data-type="hls"
+                  >
+                    <img
+                      src="https://cdn.taaqup.com//2024/10/%D8%AA%D8%B1%D8%AF%D8%AF-%D9%82%D9%86%D9%88%D8%A7%D8%AA-%D8%AF%D8%A8%D9%8A-%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A9-%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF.webp"
+                      alt="DUBAI SPORTS 2"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://dmitwlvvll.cdn.mgmlcdn.com/dubaisportshd5/smil:dubaisportshd5.smil/master.m3u8"
+                    data-name="DUBAI SPORTS 3"
+                    data-group="SPORTS"
+                    data-type="hls"
+                  >
+                    <img
+                      src="https://cdn.taaqup.com//2024/10/%D8%AA%D8%B1%D8%AF%D8%AF-%D9%82%D9%86%D9%88%D8%A7%D8%AA-%D8%AF%D8%A8%D9%8A-%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A9-%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF.webp"
+                      alt="DUBAI SPORTS 3"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="container my-4">
+      <section class="gradient-bg rounded-3 p-5 text-center mb-5">
+        <h2 class="fw-bold mb-3">APPLE TV</h2>
+        <p class="mb-4">
+          Download aplikasi APPLE TV di bawah ini! Dan nikmati ratusan siaran
+          televisi nasional dan internasional dengan kualitas terbaik.
+        </p>
+        <a
+          href="https://appeltv.netlify.app/download/appletv.apk"
+          class="btn btn-light px-2"
+          >DOWNLOAD</a
+        >
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer py-4 mt-4 border-top">
+      <div class="text-center text-muted">
+        <p class="mb-0 text-white">Streaming TV &copy; 2025 | Apple TV</p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script
+      type="text/javascript"
+      src="//pl27450530.profitableratecpm.com/ea/b1/d0/eab1d0220fea6fb3a67f3e23c05bf035.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//pl27450530.profitableratecpm.com/ea/b1/d0/eab1d0220fea6fb3a67f3e23c05bf035.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//pl27450530.profitableratecpm.com/ea/b1/d0/eab1d0220fea6fb3a67f3e23c05bf035.js"
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="//pantherinvincible.com/1e/fe/02/1efe025f6778fc30b35017ced90f4bd2.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//pantherinvincible.com/1e/fe/02/1efe025f6778fc30b35017ced90f4bd2.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//pantherinvincible.com/1e/fe/02/1efe025f6778fc30b35017ced90f4bd2.js"
+    ></script>
+    <script src="https://appeltv.netlify.app/assets/main.js"></script>
+    <script>
+      document.addEventListener("keydown", function (event) {
+        if (event.ctrlKey) {
+          event.preventDefault();
+        }
+
+        if (event.keyCode == 123) {
+          event.preventDefault();
+        }
+      });
+      document.addEventListener(
+        "contextmenu",
+
+        (event) => event.preventDefault()
+      );
+    </script>
+  </body>
+</html>

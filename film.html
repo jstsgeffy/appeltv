@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sports | APPLE TV</title>
+    <link href="https://appeltv.netlify.app/AppleTV-Logo.png" rel="icon" />
+    <link
+      href="https://appeltv.netlify.app/AppleTV-Logo.png"
+      rel="apple-touch-icon"
+    />
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+    />
+    <!-- HLS.js library untuk memutar m3u8 -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.10/dist/hls.min.js"></script>
+
+    <style>
+      :root {
+        --primary: #1a729b;
+        --secondary: #d62d9e;
+      }
+
+      body {
+        background-color: #f8f9fa;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .navbar {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+      }
+
+      .navbar-brand img {
+        height: 30px;
+        margin-right: 10px;
+      }
+
+      .player-container {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        background-color: white;
+      }
+
+      .channel-info {
+        padding: 15px;
+        background-color: white;
+      }
+
+      .channel-list {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        height: 100%;
+      }
+
+      .channel-btn {
+        transition: all 0.2s ease;
+        border: none;
+        text-align: center;
+        padding: 0;
+        border-radius: 8px;
+        text-decoration: none;
+        background: transparent;
+      }
+
+      .channel-btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .channel-btn.active {
+        position: relative;
+      }
+
+      .channel-btn.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 25%;
+        width: 50%;
+        height: 3px;
+        background-color: var(--primary);
+        border-radius: 3px;
+      }
+
+      .channel-btn img {
+        width: 100%;
+        max-width: 100px; /* Increased from 80px to 100px */
+        height: auto;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+
+      .group-header {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        padding: 12px 15px;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .gradient-bg {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+      }
+
+      .footer {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+      }
+
+      /* Video player styling */
+      #hls-player {
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+      }
+
+      .player-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #000;
+        color: white;
+        height: 100%;
+        min-height: 300px;
+      }
+
+      @media (max-width: 992px) {
+        .channel-btn img {
+          max-width: 80px; /* Increased from 60px to 80px */
+        }
+      }
+
+      @media (max-width: 768px) {
+        .channel-btn img {
+          max-width: 70px; /* Increased from 50px to 70px */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar Bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <img src="https://appeltv.netlify.app/AppleTV-Logo.png" alt="Logo" />
+          TV Streaming
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="https://appeltv.netlify.app/tv"
+                ><i class="bi bi-house-door"></i> NASIONAL</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"
+                ><i class="bi bi-collection-play"></i> SPORTS</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="https://appeltv.netlify.app/film"
+                ><i class="bi bi-info-circle"></i> FILM</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-4">
+      <div class="row g-4">
+        <!-- Player Section -->
+        <div class="col-lg-8">
+          <div class="player-container">
+            <div class="ratio ratio-16x9">
+              <!-- Player utama untuk konten iframe -->
+              <iframe
+                id="tv-frame"
+                src="https://short.icu/U2UBUlADE"
+                allowfullscreen
+              ></iframe>
+
+              <!-- Player HLS untuk konten m3u8 (tersembunyi secara default) -->
+              <div id="hls-container" style="display: none">
+                <video id="hls-player" controls></video>
+              </div>
+
+              <!-- Placeholder ketika switching player -->
+              <div
+                id="player-placeholder"
+                class="player-placeholder"
+                style="display: none"
+              >
+                <div class="text-center">
+                  <div class="spinner-border text-primary mb-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <p>Memuat stream...</p>
+                </div>
+              </div>
+            </div>
+            <div class="channel-info">
+              <h3 id="current-channel">ANGEL POL (2025)</h3>
+              <div class="d-flex gap-2 text-muted">
+                <span id="current-group"
+                  >Jati (Bhisma Mulia), mahasiswa seni rupa yang kehilangan
+                  beasiswa karena ketidakadilan kampus, dan Lastri (Michele
+                  Ziudith), gadis desa yang tertipu calo tenaga kerja saat
+                  merantau di kota. Dipertemukan dalam keterpurukan dan ketidak
+                  adilan dalam sosial masyarakat. Bersama, mereka membangun
+                  orkes dangdut keliling yang menyuarakan keresahan rakyat.
+                  Namun saat kesuksesan datang, ketenaran mulai menjauhkan
+                  mereka.</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Channel List -->
+        <div class="col-lg-4">
+          <div class="channel-list">
+            <!-- NASIONAL Group -->
+            <div class="group-header">FILM</div>
+            <div class="p-3">
+              <div class="row g-3 row-cols-3 row-cols-md-4 row-cols-lg-3">
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn active"
+                    data-src="https://short.icu/U2UBUlADE"
+                    data-name="ANGEL POL (2025)"
+                    data-group="Jati (Bhisma Mulia), mahasiswa seni rupa yang kehilangan beasiswa karena ketidakadilan kampus, dan Lastri (Michele Ziudith), gadis desa yang tertipu calo tenaga kerja saat merantau di kota. Dipertemukan dalam keterpurukan dan ketidak adilan dalam sosial masyarakat. Bersama, mereka membangun orkes dangdut keliling yang menyuarakan keresahan rakyat. Namun saat kesuksesan datang, ketenaran mulai menjauhkan mereka."
+                  >
+                    <img
+                      src="https://kitanonton2.homes/wp-content/uploads/2025/08/j5p1XSlq8ya4MW4YcBxfu9czhYH.jpg"
+                      alt="ANGEL POL (2025)"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://short.icu/60keNGV22"
+                    data-name="MENDADAK DANGDUT (2025)"
+                    data-group="Seorang penyanyi pop terkenal dituduh melakukan pembunuhan yang dilakukan oleh seorang produser rekaman indie, kemudian kabur ke sebuah desa di pinggiran Jakarta, dan bertahan hidup sebagai penyanyi dangdut."
+                  >
+                    <img
+                      src="https://m.media-amazon.com/images/M/MV5BMTdmZmMyYWQtNGJkYS00MTlhLWEwNDAtZDFjN2NiMWVjYjNiXkEyXkFqcGc@._V1_QL75_UY281_CR4,0,190,281_.jpg"
+                      alt="MENDADAK DANGDUT (2025)"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://short.icu/vlmlW7azw"
+                    data-name="LA TAHZAN (2025)"
+                    data-group="Alina (Marshanda) yang memiliki keluarga harmonis dan penuh cinta, tak menyangka kehadiran pengasuh baru di rumahnya akan menjadi sebuah ancaman besar. Kini, Alina dihadapkan pada pilihan untuk melepaskan atau berjuang mempertahankan keutuhan keluarganya."
+                  >
+                    <img
+                      src="https://m.media-amazon.com/images/M/MV5BOGZkMDA2MjEtNDQ3OS00M2ZlLThlN2UtMzk5YmU5Y2RkMjA0XkEyXkFqcGc@._V1_QL75_UY281_CR18,0,190,281_.jpg"
+                      alt="LA TAHZAN (2025)"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div class="col">
+                  <a
+                    href="#"
+                    class="d-block channel-btn"
+                    data-src="https://short.icu/OICqoQD2i"
+                    data-name="PAMALI: TUMBAL (2025)"
+                    data-group="Kampung tempat tinggal Putri (Keisya Levronka) sering mengalami kejadian misterius. Beberapa wanita tiba-tiba menghilang tanpa jejak. Sering terjadi pencurian uang yang tidak bisa dijelaskan dengan logika. Suatu hari Ibu Putri tiba-tiba menghilang. Putri bersama sahabatnya Kiki (Ummi Quary) dan Cecep (Fajar Nugra) lalu menelusuri petunjuk yang ada demi menemukan Ibunya kembali, mulai dari menyusuri hutan angker, pabrik terbengkalai, sampai tiba di sebuah rumah tua yang ternyata dihuni oleh tuyul dan kuntilanak hitam yang mengerikan."
+                  >
+                    <img
+                      src="https://m.media-amazon.com/images/M/MV5BODk1OTU1Y2ItNjk2Zi00NzdjLWFhYWItZTgxNDE5OThkNzVkXkEyXkFqcGc@._V1_QL75_UY281_CR4,0,190,281_.jpg"
+                      alt="PAMALI: TUMBAL (2025)"
+                      class="img-fluid"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="container my-4">
+      <section class="gradient-bg rounded-3 p-5 text-center mb-5">
+        <h2 class="fw-bold mb-3">APPLE TV</h2>
+        <p class="mb-4">
+          Download aplikasi APPLE TV di bawah ini! Dan nikmati ratusan siaran
+          televisi nasional dan internasional dengan kualitas terbaik.
+        </p>
+        <a
+          href="https://appeltv.netlify.app/download/appletv.apk"
+          class="btn btn-light px-2"
+          >DOWNLOAD</a
+        >
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer py-4 mt-4 border-top">
+      <div class="text-center text-muted">
+        <p class="mb-0 text-white">Streaming TV &copy; 2025 | Apple TV</p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script
+      type="text/javascript"
+      src="//pl27450530.profitableratecpm.com/ea/b1/d0/eab1d0220fea6fb3a67f3e23c05bf035.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//pl27450530.profitableratecpm.com/ea/b1/d0/eab1d0220fea6fb3a67f3e23c05bf035.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//pl27450530.profitableratecpm.com/ea/b1/d0/eab1d0220fea6fb3a67f3e23c05bf035.js"
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="//pantherinvincible.com/1e/fe/02/1efe025f6778fc30b35017ced90f4bd2.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//pantherinvincible.com/1e/fe/02/1efe025f6778fc30b35017ced90f4bd2.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//pantherinvincible.com/1e/fe/02/1efe025f6778fc30b35017ced90f4bd2.js"
+    ></script>
+    <script>
+      document.addEventListener("keydown", function (event) {
+        if (event.ctrlKey) {
+          event.preventDefault();
+        }
+
+        if (event.keyCode == 123) {
+          event.preventDefault();
+        }
+      });
+      document.addEventListener(
+        "contextmenu",
+
+        (event) => event.preventDefault()
+      );
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Inisialisasi HLS.js
+        let hls = new Hls();
+        const video = document.getElementById("hls-player");
+
+        // Channel selection functionality
+        const channelBtns = document.querySelectorAll(".channel-btn");
+        const tvFrame = document.getElementById("tv-frame");
+        const hlsContainer = document.getElementById("hls-container");
+        const playerPlaceholder = document.getElementById("player-placeholder");
+        const currentChannel = document.getElementById("current-channel");
+        const currentGroup = document.getElementById("current-group");
+
+        // Fungsi untuk memutar stream HLS
+        function playHlsStream(url) {
+          // Tampilkan placeholder
+          tvFrame.style.display = "none";
+          hlsContainer.style.display = "none";
+          playerPlaceholder.style.display = "block";
+
+          // Hentikan stream sebelumnya jika ada
+          if (hls) {
+            hls.destroy();
+          }
+
+          // Buat instance HLS baru
+          hls = new Hls();
+
+          // Attach ke video element
+          hls.loadSource(url);
+          hls.attachMedia(video);
+
+          // Tunggu until media bisa diputar
+          hls.on(Hls.Events.MANIFEST_PARSED, function () {
+            playerPlaceholder.style.display = "none";
+            hlsContainer.style.display = "block";
+            video.play().catch((e) => {
+              console.error("Error attempting to play:", e);
+            });
+          });
+
+          // Handle errors
+          hls.on(Hls.Events.ERROR, function (event, data) {
+            console.error("HLS error:", data);
+            if (data.fatal) {
+              switch (data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  alert(
+                    "Gagal memuat stream. Silakan coba channel lain atau periksa koneksi internet Anda."
+                  );
+                  hls.startLoad();
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  alert("Error media. Silakan coba channel lain.");
+                  hls.recoverMediaError();
+                  break;
+                default:
+                  alert("Error tidak diketahui. Silakan coba channel lain.");
+                  break;
+              }
+            }
+          });
+        }
+
+        // Fungsi untuk memutar iframe biasa
+        function playIframeStream(url) {
+          // Sembunyikan player HLS dan tampilkan iframe
+          hlsContainer.style.display = "none";
+          playerPlaceholder.style.display = "none";
+          tvFrame.style.display = "block";
+
+          // Hentikan HLS stream jika sedang berjalan
+          if (hls) {
+            hls.stopLoad();
+            video.pause();
+          }
+
+          // Set iframe source
+          tvFrame.src = url;
+        }
+
+        channelBtns.forEach((btn) => {
+          btn.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            // Remove active class from all buttons
+            channelBtns.forEach((b) => b.classList.remove("active"));
+
+            // Add active class to clicked button
+            this.classList.add("active");
+
+            // Get stream details
+            const streamSrc = this.getAttribute("data-src");
+            const streamType = this.getAttribute("data-type");
+            const channelName = this.getAttribute("data-name");
+            const channelGroup = this.getAttribute("data-group");
+
+            // Update channel info
+            currentChannel.textContent = channelName;
+            currentGroup.textContent = channelGroup;
+
+            // Play stream based on type
+            if (streamType === "hls") {
+              playHlsStream(streamSrc);
+            } else {
+              playIframeStream(streamSrc);
+            }
+          });
+        });
+
+        // Handle potential iframe errors
+        tvFrame.addEventListener("error", function () {
+          alert(
+            "Gagal memuat streaming. Silakan coba channel lain atau periksa koneksi internet Anda."
+          );
+        });
+
+        // Cek jika browser native support HLS
+        if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          // Untuk browser yang support native HLS (Safari)
+          video.addEventListener("loadedmetadata", function () {
+            video.play();
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
